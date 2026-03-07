@@ -200,20 +200,46 @@ const Accounts = () => {
 
       {/* Add profile dialog */}
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>Добавить WhatsApp профиль</DialogTitle>
-            <DialogDescription>Введите данные нового аккаунта</DialogDescription>
+            <DialogDescription>Подключите свой номер телефона через QR код</DialogDescription>
           </DialogHeader>
-          <div className="space-y-3">
-            <Input placeholder="Номер телефона" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} />
-            <Input placeholder="Имя (необязательно)" value={newName} onChange={(e) => setNewName(e.target.value)} />
-            <Input placeholder="Proxy (необязательно)" value={newProxy} onChange={(e) => setNewProxy(e.target.value)} />
+          <div className="space-y-4">
+            <div className="flex gap-2">
+              <Input
+                placeholder="Номер телефона в международном формате, без +"
+                value={newPhone}
+                onChange={(e) => setNewPhone(e.target.value)}
+                className="flex-1"
+              />
+              <Button variant="outline" onClick={() => {}}>Получить код</Button>
+            </div>
+
+            <div className="flex justify-center">
+              <Button className="rounded-full px-6" onClick={() => {}}>Получить QR код</Button>
+            </div>
+
+            {/* QR placeholder */}
+            <div className="flex justify-center py-2">
+              <div className="h-48 w-48 border-2 border-dashed border-muted-foreground/30 rounded-lg flex items-center justify-center text-muted-foreground text-sm">
+                QR код появится здесь
+              </div>
+            </div>
+
+            <div className="rounded-lg bg-primary/10 border border-primary/20 p-3">
+              <p className="text-xs font-semibold text-primary flex items-center gap-1">
+                <MessageCircle className="h-3.5 w-3.5" />
+                ЧТОБЫ НАЧАТЬ ПОЛЬЗОВАТЬСЯ ИНСТРУМЕНТОМ, ВАМ НЕОБХОДИМО ПОДКЛЮЧИТЬ СВОЙ НОМЕР ТЕЛЕФОНА.
+              </p>
+            </div>
+
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>Шаг 1. Откройте WhatsApp на своем телефоне</p>
+              <p>Шаг 2. Нажмите Меню или Настройки и выберите WhatsApp Web</p>
+              <p>Шаг 3. Наведите телефон на этот экран и запишите приведенный выше код</p>
+            </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setAddOpen(false)}>Отмена</Button>
-            <Button onClick={handleAdd}>Добавить</Button>
-          </DialogFooter>
         </DialogContent>
       </Dialog>
 
