@@ -60,7 +60,7 @@ const initialCampaigns: Campaign[] = [
   },
 ];
 
-const groupOptions = ["Keremet update", "Клиенты VIP", "Партнёры", "Новые"];
+const subgroupOptions = ["Keremet update", "VIP клиенты", "Новые партнёры", "Рассылка март"];
 const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250", "77082877802", "77002570488"];
 
 const Campaigns = () => {
@@ -154,11 +154,11 @@ const Campaigns = () => {
                   />
                 </div>
                 <div>
-                  <Label>Группа контактов</Label>
+                  <Label>Подгруппа контактов</Label>
                   <Select value={form.group} onValueChange={(v) => setForm({ ...form, group: v })}>
-                    <SelectTrigger><SelectValue placeholder="Выберите группу" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder="Выберите подгруппу" /></SelectTrigger>
                     <SelectContent>
-                      {groupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                      {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
@@ -299,7 +299,7 @@ const Campaigns = () => {
                 {/* Footer bar */}
                 <div className="bg-gradient-to-r from-primary/90 to-primary/70 text-primary-foreground px-5 py-3 flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] text-primary-foreground/60 uppercase tracking-wider">Group</p>
+                    <p className="text-[11px] text-primary-foreground/60 uppercase tracking-wider">Подгруппа</p>
                     <p className="font-display font-semibold text-sm">{selected.group}</p>
                   </div>
                   <div className="text-right">
