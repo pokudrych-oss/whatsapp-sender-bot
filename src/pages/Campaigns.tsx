@@ -67,13 +67,43 @@ const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250"
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(campaigns[0]?.id || null);
   const [form, setForm] = useState({
     name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
+  const [editForm, setEditForm] = useState({
+    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
+  });
 
   const selected = campaigns.find((c) => c.id === selectedId) || null;
+
+  const openEditDialog = (c: Campaign) => {
+    setEditingId(c.id);
+    setEditForm({
+      name: c.name, phone: c.phone, message: c.message, group: c.group,
+      date: c.nextAction || undefined, time: c.nextActionTime,
+      minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleEdit = () => {
+    if (!editForm.name || !editForm.phone || !editForm.message || !editForm.group) {
+      toast.error("Заполните все обязательные поля");
+      return;
+    }
+    setCampaigns(prev => prev.map(c => c.id === editingId ? {
+      ...c, name: editForm.name, phone: editForm.phone, message: editForm.message,
+      group: editForm.group, nextAction: editForm.date || null, nextActionTime: editForm.time,
+    } : c));
+    setEditDialogOpen(false);
+    setEditingId(null);
+    toast.success("Рассылка обновлена");
+  };
 
   const handleCreate = () => {
     if (!form.name || !form.phone || !form.message || !form.group) {
@@ -310,7 +340,7 @@ const Campaigns = () => {
                         }}>
                           <Copy className="h-4 w-4 mr-2" /> Клонировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast.info("Функция редактирования в разработке")}>
+                        <DropdownMenuItem onClick={() => openEditDialog(selected)}>
                           <Pencil className="h-4 w-4 mr-2" /> Изменить
                         </DropdownMenuItem>
                         <DropdownMenuItem
@@ -391,6 +421,87 @@ const Campaigns = () => {
             </div>
           )}
         </div>
+
+        {/* Edit Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="font-display">Изменить рассылку</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 mt-2">
+              <div>
+                <Label>Название</Label>
+                <Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
+              </div>
+              <div>
+                <Label>Номер телефона отправителя</Label>
+                <Select value={editForm.phone} onValueChange={(v) => setEditForm({ ...editForm, phone: v })}>
+                  <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
+                  <SelectContent>
+                    {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Текст рассылки</Label>
+                <Textarea
+                  value={editForm.message}
+                  onChange={(e) => setEditForm({ ...editForm, message: e.target.value })}
+                  className="min-h-[120px]"
+                />
+              </div>
+              <div>
+                <Label>Подгруппа контактов</Label>
+                <Select value={editForm.group} onValueChange={(v) => setEditForm({ ...editForm, group: v })}>
+                  <SelectTrigger><SelectValue placeholder="Выберите подгруппу" /></SelectTrigger>
+                  <SelectContent>
+                    {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label>Запланировать рассылку</Label>
+                <div className="flex gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline" className={cn("flex-1 justify-start text-left font-normal", !editForm.date && "text-muted-foreground")}>
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {editForm.date ? format(editForm.date, "dd/MM/yyyy", { locale: ru }) : "Дата"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar mode="single" selected={editForm.date} onSelect={(d) => setEditForm({ ...editForm, date: d })} initialFocus className="p-3 pointer-events-auto" />
+                    </PopoverContent>
+                  </Popover>
+                  <Input type="time" value={editForm.time} onChange={(e) => setEditForm({ ...editForm, time: e.target.value })} className="w-28" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Минимальный интервал (секунд)</Label>
+                  <Input type="number" value={editForm.minInterval} onChange={(e) => setEditForm({ ...editForm, minInterval: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Максимальный интервал (секунд)</Label>
+                  <Input type="number" value={editForm.maxInterval} onChange={(e) => setEditForm({ ...editForm, maxInterval: e.target.value })} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Отправка с:</Label>
+                  <Input type="time" value={editForm.sendFrom} onChange={(e) => setEditForm({ ...editForm, sendFrom: e.target.value })} />
+                </div>
+                <div>
+                  <Label>Отправка до:</Label>
+                  <Input type="time" value={editForm.sendTo} onChange={(e) => setEditForm({ ...editForm, sendTo: e.target.value })} />
+                </div>
+              </div>
+              <Button onClick={handleEdit} className="w-full gradient-primary text-primary-foreground">
+                Сохранить изменения
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );
