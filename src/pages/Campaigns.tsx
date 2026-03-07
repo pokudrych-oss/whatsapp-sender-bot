@@ -60,7 +60,7 @@ const initialCampaigns: Campaign[] = [
   },
 ];
 
-const groupOptions = ["Keremet update", "Клиенты VIP", "Партнёры", "Новые"];
+const subgroupOptions = ["Keremet update", "VIP клиенты", "Новые партнёры", "Рассылка март"];
 const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250", "77082877802", "77002570488"];
 
 const Campaigns = () => {
