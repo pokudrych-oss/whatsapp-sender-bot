@@ -506,7 +506,7 @@ const Campaigns = () => {
                     {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                {editForm.group && <SubgroupVariableInfo groupName={editForm.group} />}
+                {editForm.group && <SubgroupVariableInfo groupName={editForm.group} onInsert={(v) => setEditForm(f => ({ ...f, message: f.message + v }))} />}
               </div>
               <div>
                 <Label>Запланировать рассылку</Label>
