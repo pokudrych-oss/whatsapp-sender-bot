@@ -497,13 +497,28 @@ const Campaigns = () => {
                 <Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
               </div>
               <div>
-                <Label>Номер телефона отправителя</Label>
-                <Select value={editForm.phone} onValueChange={(v) => setEditForm({ ...editForm, phone: v })}>
-                  <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
-                  <SelectContent>
-                    {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Label>Номера телефонов отправителей</Label>
+                <div className="rounded-md border border-input bg-background p-2 space-y-1 max-h-40 overflow-y-auto">
+                  {phoneOptions.map((p) => (
+                    <label key={p} className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/50 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={editForm.phones.includes(p)}
+                        onChange={(e) => {
+                          setEditForm(f => ({
+                            ...f,
+                            phones: e.target.checked ? [...f.phones, p] : f.phones.filter(x => x !== p),
+                          }));
+                        }}
+                        className="rounded border-input"
+                      />
+                      {p}
+                    </label>
+                  ))}
+                </div>
+                {editForm.phones.length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">Выбрано: {editForm.phones.length}</p>
+                )}
               </div>
               <div>
                 <Label>Текст рассылки</Label>
