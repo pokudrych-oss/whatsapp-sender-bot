@@ -12,6 +12,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 import { ru } from "date-fns/locale";
 import { Plus, CalendarIcon, Pause, Play, Trash2, MoreVertical, Download, Copy, Pencil, Archive } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -61,8 +62,47 @@ const initialCampaigns: Campaign[] = [
   },
 ];
 
-const subgroupOptions = ["Keremet update", "VIP клиенты", "Новые партнёры", "Рассылка март"];
+const subgroupData: Record<string, { variables: string[]; examples: Record<string, string> }> = {
+  "Keremet update": {
+    variables: ["field_1", "field_2", "field_3", "field_4"],
+    examples: { field_1: "Ахметов Б.К.", field_2: "ул. Абая 12", field_3: "KR-00457", field_4: "15200" },
+  },
+  "VIP клиенты": {
+    variables: ["field_1", "field_2"],
+    examples: { field_1: "Иванов А.С.", field_2: "20" },
+  },
+  "Новые партнёры": {
+    variables: ["field_1", "field_2", "field_3"],
+    examples: { field_1: "ТОО Альфа", field_2: "Астана", field_3: "partnership" },
+  },
+  "Рассылка март": {
+    variables: ["field_1"],
+    examples: { field_1: "+77001234567" },
+  },
+};
+const subgroupOptions = Object.keys(subgroupData);
 const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250", "77082877802", "77002570488"];
+
+const SubgroupVariableInfo = ({ groupName }: { groupName: string }) => {
+  const data = subgroupData[groupName];
+  if (!data) return null;
+  return (
+    <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-muted-foreground">Переменные подгруппы</span>
+        <Badge variant="secondary" className="text-xs">{data.variables.length} перем.</Badge>
+      </div>
+      <div className="space-y-1">
+        {data.variables.map((v) => (
+          <div key={v} className="flex items-center justify-between text-sm">
+            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{`{{${v}}}`}</code>
+            <span className="text-xs text-muted-foreground truncate ml-2">{data.examples[v]}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
@@ -193,6 +233,7 @@ const Campaigns = () => {
                       {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                  {form.group && <SubgroupVariableInfo groupName={form.group} />}
                 </div>
                 <div>
                   <Label>Запланировать рассылку</Label>
@@ -458,6 +499,7 @@ const Campaigns = () => {
                     {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                {editForm.group && <SubgroupVariableInfo groupName={editForm.group} />}
               </div>
               <div>
                 <Label>Запланировать рассылку</Label>
