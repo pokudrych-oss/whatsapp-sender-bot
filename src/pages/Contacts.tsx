@@ -134,7 +134,7 @@ const Contacts = () => {
     if (!selectedSubGroup || !importText.trim()) { toast.error("Вставьте данные для импорта"); return; }
     const lines = importText.trim().split("\n").filter(l => l.trim());
     const newContacts: Contact[] = lines.map((line, idx) => {
-      const parts = line.split(",").map(p => p.trim());
+      const parts = line.split(";").map(p => p.trim());
       const phone = parts[0] || "";
       const vars: Record<string, string> = {};
       parts.slice(1).forEach((v, i) => { vars[`var${i + 1}`] = v; });
