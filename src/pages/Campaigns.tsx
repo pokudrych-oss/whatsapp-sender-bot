@@ -153,14 +153,14 @@ const Campaigns = () => {
   };
 
   const handleCreate = () => {
-    if (!form.name || !form.phone || !form.message || !form.group) {
+    if (!form.name || form.phones.length === 0 || !form.message || !form.group) {
       toast.error("Заполните все обязательные поля");
       return;
     }
     const newCampaign: Campaign = {
       id: Date.now().toString(),
       name: form.name,
-      phone: form.phone,
+      phone: form.phones,
       message: form.message,
       group: form.group,
       nextAction: form.date || null,
@@ -172,7 +172,7 @@ const Campaigns = () => {
     };
     setCampaigns([...campaigns, newCampaign]);
     setSelectedId(newCampaign.id);
-    setForm({ name: "", phone: "", message: "", group: "", date: undefined, time: "08:00", minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00" });
+    setForm({ name: "", phones: [], message: "", group: "", date: undefined, time: "08:00", minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00" });
     setDialogOpen(false);
     toast.success("Рассылка создана");
   };
