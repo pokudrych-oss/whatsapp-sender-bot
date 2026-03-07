@@ -69,6 +69,7 @@ const Campaigns = () => {
   const [selectedId, setSelectedId] = useState<string | null>(campaigns[0]?.id || null);
   const [form, setForm] = useState({
     name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
 
   const selected = campaigns.find((c) => c.id === selectedId) || null;
