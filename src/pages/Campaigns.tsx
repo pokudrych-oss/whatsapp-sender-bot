@@ -94,7 +94,7 @@ const Campaigns = () => {
     };
     setCampaigns([...campaigns, newCampaign]);
     setSelectedId(newCampaign.id);
-    setForm({ name: "", phone: "", message: "", group: "", date: undefined, time: "08:00" });
+    setForm({ name: "", phone: "", message: "", group: "", date: undefined, time: "08:00", minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00" });
     setDialogOpen(false);
     toast.success("Рассылка создана");
   };
