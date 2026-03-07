@@ -154,11 +154,11 @@ const Campaigns = () => {
                   />
                 </div>
                 <div>
-                  <Label>Группа контактов</Label>
+                  <Label>Подгруппа контактов</Label>
                   <Select value={form.group} onValueChange={(v) => setForm({ ...form, group: v })}>
-                    <SelectTrigger><SelectValue placeholder="Выберите группу" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder="Выберите подгруппу" /></SelectTrigger>
                     <SelectContent>
-                      {groupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+                      {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
                 </div>
