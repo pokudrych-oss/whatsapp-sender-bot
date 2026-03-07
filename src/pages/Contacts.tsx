@@ -104,7 +104,7 @@ const Contacts = () => {
     if (!selectedSubGroup || !newContact.phone.trim()) { toast.error("Заполните номер телефона"); return; }
     const vars: Record<string, string> = {};
     if (newContact.variables.trim()) {
-      newContact.variables.split(",").forEach((v, i) => { vars[`var${i + 1}`] = v.trim(); });
+      newContact.variables.split(";").forEach((v, i) => { vars[`var${i + 1}`] = v.trim(); });
     }
     const contact: Contact = {
       id: Date.now().toString(),
