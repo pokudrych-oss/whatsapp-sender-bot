@@ -299,7 +299,7 @@ const Campaigns = () => {
                 {/* Footer bar */}
                 <div className="bg-gradient-to-r from-primary/90 to-primary/70 text-primary-foreground px-5 py-3 flex items-center justify-between">
                   <div>
-                    <p className="text-[11px] text-primary-foreground/60 uppercase tracking-wider">Group</p>
+                    <p className="text-[11px] text-primary-foreground/60 uppercase tracking-wider">Подгруппа</p>
                     <p className="font-display font-semibold text-sm">{selected.group}</p>
                   </div>
                   <div className="text-right">
