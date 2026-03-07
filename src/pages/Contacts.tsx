@@ -104,7 +104,7 @@ const Contacts = () => {
     if (!selectedSubGroup || !newContact.phone.trim()) { toast.error("Заполните номер телефона"); return; }
     const vars: Record<string, string> = {};
     if (newContact.variables.trim()) {
-      newContact.variables.split(",").forEach((v, i) => { vars[`var${i + 1}`] = v.trim(); });
+      newContact.variables.split(";").forEach((v, i) => { vars[`var${i + 1}`] = v.trim(); });
     }
     const contact: Contact = {
       id: Date.now().toString(),
@@ -134,7 +134,7 @@ const Contacts = () => {
     if (!selectedSubGroup || !importText.trim()) { toast.error("Вставьте данные для импорта"); return; }
     const lines = importText.trim().split("\n").filter(l => l.trim());
     const newContacts: Contact[] = lines.map((line, idx) => {
-      const parts = line.split(",").map(p => p.trim());
+      const parts = line.split(";").map(p => p.trim());
       const phone = parts[0] || "";
       const vars: Record<string, string> = {};
       parts.slice(1).forEach((v, i) => { vars[`var${i + 1}`] = v; });
@@ -499,8 +499,8 @@ const Contacts = () => {
                 onChange={e => setNewContact({ ...newContact, phone: e.target.value })} />
             </div>
             <div>
-              <Label>Переменные (через запятую)</Label>
-              <Input placeholder="Москва, 10%, золотой" value={newContact.variables}
+              <Label>Переменные (через точку с запятой ;)</Label>
+              <Input placeholder="Москва; 10%; золотой" value={newContact.variables}
                 onChange={e => setNewContact({ ...newContact, variables: e.target.value })} />
               <p className="text-xs text-muted-foreground mt-1">Будут доступны как var1, var2, var3…</p>
             </div>
@@ -518,7 +518,7 @@ const Contacts = () => {
               <Label>Вставьте данные</Label>
               <Textarea
                 rows={8}
-                placeholder={"+79001234567, Москва, 10%\n+79112345678, СПб, 15%\n+79253456789, Казань"}
+                placeholder={"+79001234567; Москва; 10%\n+79112345678; СПб; 15%\n+79253456789; Казань"}
                 value={importText}
                 onChange={e => setImportText(e.target.value)}
                 className="font-mono text-sm"
