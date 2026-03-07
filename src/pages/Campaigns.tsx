@@ -163,24 +163,41 @@ const Campaigns = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>Дата следующего действия</Label>
+                <div>
+                  <Label>Запланировать рассылку</Label>
+                  <div className="flex gap-2">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !form.date && "text-muted-foreground")}>
+                        <Button variant="outline" className={cn("flex-1 justify-start text-left font-normal", !form.date && "text-muted-foreground")}>
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {form.date ? format(form.date, "dd/MM/yyyy", { locale: ru }) : "Выбрать"}
+                          {form.date ? format(form.date, "dd/MM/yyyy", { locale: ru }) : "Дата"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar mode="single" selected={form.date} onSelect={(d) => setForm({ ...form, date: d })} initialFocus className="p-3 pointer-events-auto" />
                       </PopoverContent>
                     </Popover>
+                    <Input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} className="w-28" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Минимальный интервал между сообщениями (секунд)</Label>
+                    <Input type="number" value={form.minInterval} onChange={(e) => setForm({ ...form, minInterval: e.target.value })} />
                   </div>
                   <div>
-                    <Label>Время</Label>
-                    <Input type="time" value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} />
+                    <Label>Максимальный интервал между сообщениями (секунд)</Label>
+                    <Input type="number" value={form.maxInterval} onChange={(e) => setForm({ ...form, maxInterval: e.target.value })} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>Отправка с:</Label>
+                    <Input type="time" value={form.sendFrom} onChange={(e) => setForm({ ...form, sendFrom: e.target.value })} />
+                  </div>
+                  <div>
+                    <Label>Отправка до:</Label>
+                    <Input type="time" value={form.sendTo} onChange={(e) => setForm({ ...form, sendTo: e.target.value })} />
                   </div>
                 </div>
                 <Button onClick={handleCreate} className="w-full gradient-primary text-primary-foreground">
