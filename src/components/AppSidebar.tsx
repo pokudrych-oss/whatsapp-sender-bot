@@ -17,6 +17,7 @@ import {
 
 const mainItems = [
   { title: "Дашборд", url: "/", icon: LayoutDashboard },
+  { title: "Аккаунты", url: "/accounts", icon: MessageSquareText },
   { title: "Контакты", url: "/contacts", icon: Users },
   { title: "Шаблоны", url: "/templates", icon: MessageSquareText },
   { title: "Рассылки", url: "/campaigns", icon: Send },
