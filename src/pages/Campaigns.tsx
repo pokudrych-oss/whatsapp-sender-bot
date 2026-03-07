@@ -139,12 +139,12 @@ const Campaigns = () => {
   };
 
   const handleEdit = () => {
-    if (!editForm.name || !editForm.phone || !editForm.message || !editForm.group) {
+    if (!editForm.name || editForm.phones.length === 0 || !editForm.message || !editForm.group) {
       toast.error("Заполните все обязательные поля");
       return;
     }
     setCampaigns(prev => prev.map(c => c.id === editingId ? {
-      ...c, name: editForm.name, phone: editForm.phone, message: editForm.message,
+      ...c, name: editForm.name, phone: editForm.phones, message: editForm.message,
       group: editForm.group, nextAction: editForm.date || null, nextActionTime: editForm.time,
     } : c));
     setEditDialogOpen(false);
