@@ -131,7 +131,7 @@ const Campaigns = () => {
   const openEditDialog = (c: Campaign) => {
     setEditingId(c.id);
     setEditForm({
-      name: c.name, phone: c.phone, message: c.message, group: c.group,
+      name: c.name, phones: c.phone, message: c.message, group: c.group,
       date: c.nextAction || undefined, time: c.nextActionTime,
       minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
     });
