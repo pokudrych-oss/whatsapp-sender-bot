@@ -118,11 +118,11 @@ const Campaigns = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(campaigns[0]?.id || null);
   const [form, setForm] = useState({
-    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    name: "", phones: [] as string[], message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
   const [editForm, setEditForm] = useState({
-    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    name: "", phones: [] as string[], message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
 
