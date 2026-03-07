@@ -340,7 +340,7 @@ const Campaigns = () => {
                         }}>
                           <Copy className="h-4 w-4 mr-2" /> Клонировать
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => toast.info("Функция редактирования в разработке")}>
+                        <DropdownMenuItem onClick={() => openEditDialog(selected)}>
                           <Pencil className="h-4 w-4 mr-2" /> Изменить
                         </DropdownMenuItem>
                         <DropdownMenuItem
