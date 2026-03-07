@@ -240,7 +240,7 @@ const Campaigns = () => {
                       {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
-                  {form.group && <SubgroupVariableInfo groupName={form.group} />}
+                  {form.group && <SubgroupVariableInfo groupName={form.group} onInsert={(v) => setForm(f => ({ ...f, message: f.message + v }))} />}
                 </div>
                 <div>
                   <Label>Запланировать рассылку</Label>
