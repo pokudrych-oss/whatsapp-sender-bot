@@ -137,7 +137,12 @@ const Campaigns = () => {
                 </div>
                 <div>
                   <Label>Номер телефона отправителя</Label>
-                  <Input placeholder="77713567919" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <Select value={form.phone} onValueChange={(v) => setForm({ ...form, phone: v })}>
+                    <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
+                    <SelectContent>
+                      {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label>Текст рассылки</Label>
