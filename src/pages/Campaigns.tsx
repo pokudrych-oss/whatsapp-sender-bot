@@ -22,7 +22,7 @@ import { toast } from "sonner";
 interface Campaign {
   id: string;
   name: string;
-  phone: string;
+  phone: string[];
   message: string;
   group: string;
   nextAction: Date | null;
@@ -37,7 +37,7 @@ const initialCampaigns: Campaign[] = [
   {
     id: "1",
     name: "Keremet update go",
-    phone: "77713567919",
+    phone: ["77713567919"],
     message: "Құрметті {{field_1}} сіздің қоқыс тасымалдау қызметіне, нақтылай айтқанда, жеке кәсіпкер «Керемет 2020» алдында қарызыңыз бар екенін ескертеміз.\n\nОсы жолдаманы алған күннен бастап 5 жұмыс күні ішінде мекеме алдындағы {{field_4}}тг қарызыңызды төлеуіңізді сұранамыз.\nСіздің тіркелген Мекен жайыңыз {{field_2}} Дербес шотыңыз: {{field_3}}\n\nУважаемый {{field_1}} сообщаем вам, что у вас имеется задолженность за услугу вывоза мусора, а именно перед ИП «Керемет 2020».\nПросим вас погасить задолженность в размере {{field_4}} в течение 5 рабочих дней с момента получения данного уведомления.",
     group: "Keremet update",
     nextAction: new Date(2026, 2, 8),
@@ -50,7 +50,7 @@ const initialCampaigns: Campaign[] = [
   {
     id: "2",
     name: "Акция весна 2026",
-    phone: "77019998877",
+    phone: ["77019998877"],
     message: "Здравствуйте, {{field_1}}! Рады сообщить вам о весенней акции. Скидка {{field_2}}% на все услуги до конца марта!",
     group: "Клиенты VIP",
     nextAction: new Date(2026, 2, 10),
@@ -118,11 +118,11 @@ const Campaigns = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(campaigns[0]?.id || null);
   const [form, setForm] = useState({
-    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    name: "", phones: [] as string[], message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
   const [editForm, setEditForm] = useState({
-    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    name: "", phones: [] as string[], message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
 
@@ -131,7 +131,7 @@ const Campaigns = () => {
   const openEditDialog = (c: Campaign) => {
     setEditingId(c.id);
     setEditForm({
-      name: c.name, phone: c.phone, message: c.message, group: c.group,
+      name: c.name, phones: c.phone, message: c.message, group: c.group,
       date: c.nextAction || undefined, time: c.nextActionTime,
       minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
     });
@@ -139,12 +139,12 @@ const Campaigns = () => {
   };
 
   const handleEdit = () => {
-    if (!editForm.name || !editForm.phone || !editForm.message || !editForm.group) {
+    if (!editForm.name || editForm.phones.length === 0 || !editForm.message || !editForm.group) {
       toast.error("Заполните все обязательные поля");
       return;
     }
     setCampaigns(prev => prev.map(c => c.id === editingId ? {
-      ...c, name: editForm.name, phone: editForm.phone, message: editForm.message,
+      ...c, name: editForm.name, phone: editForm.phones, message: editForm.message,
       group: editForm.group, nextAction: editForm.date || null, nextActionTime: editForm.time,
     } : c));
     setEditDialogOpen(false);
@@ -153,14 +153,14 @@ const Campaigns = () => {
   };
 
   const handleCreate = () => {
-    if (!form.name || !form.phone || !form.message || !form.group) {
+    if (!form.name || form.phones.length === 0 || !form.message || !form.group) {
       toast.error("Заполните все обязательные поля");
       return;
     }
     const newCampaign: Campaign = {
       id: Date.now().toString(),
       name: form.name,
-      phone: form.phone,
+      phone: form.phones,
       message: form.message,
       group: form.group,
       nextAction: form.date || null,
@@ -172,7 +172,7 @@ const Campaigns = () => {
     };
     setCampaigns([...campaigns, newCampaign]);
     setSelectedId(newCampaign.id);
-    setForm({ name: "", phone: "", message: "", group: "", date: undefined, time: "08:00", minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00" });
+    setForm({ name: "", phones: [], message: "", group: "", date: undefined, time: "08:00", minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00" });
     setDialogOpen(false);
     toast.success("Рассылка создана");
   };
@@ -215,13 +215,28 @@ const Campaigns = () => {
                   <Input placeholder="Например: Keremet update go" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
-                  <Label>Номер телефона отправителя</Label>
-                  <Select value={form.phone} onValueChange={(v) => setForm({ ...form, phone: v })}>
-                    <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
-                    <SelectContent>
-                      {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+                  <Label>Номера телефонов отправителей</Label>
+                  <div className="rounded-md border border-input bg-background p-2 space-y-1 max-h-40 overflow-y-auto">
+                    {phoneOptions.map((p) => (
+                      <label key={p} className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/50 cursor-pointer text-sm">
+                        <input
+                          type="checkbox"
+                          checked={form.phones.includes(p)}
+                          onChange={(e) => {
+                            setForm(f => ({
+                              ...f,
+                              phones: e.target.checked ? [...f.phones, p] : f.phones.filter(x => x !== p),
+                            }));
+                          }}
+                          className="rounded border-input"
+                        />
+                        {p}
+                      </label>
+                    ))}
+                  </div>
+                  {form.phones.length > 0 && (
+                    <p className="text-xs text-muted-foreground mt-1">Выбрано: {form.phones.length}</p>
+                  )}
                 </div>
                 <div>
                   <Label>Текст рассылки</Label>
@@ -311,7 +326,7 @@ const Campaigns = () => {
                       <div className="flex items-start justify-between">
                         <div className="min-w-0">
                           <p className="font-display font-semibold truncate">{c.name}</p>
-                          <p className="text-xs text-muted-foreground mt-0.5">{c.phone}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{c.phone.join(", ")}</p>
                         </div>
                         <div className="flex items-center gap-1 shrink-0 ml-2">
                           <Button
@@ -358,7 +373,7 @@ const Campaigns = () => {
                 <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-5 py-4 flex items-center justify-between">
                   <div>
                     <h2 className="font-display font-bold text-lg">{selected.name}</h2>
-                    <p className="text-primary-foreground/80 text-sm">{selected.phone}</p>
+                    <p className="text-primary-foreground/80 text-sm">{selected.phone.join(", ")}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
@@ -482,13 +497,28 @@ const Campaigns = () => {
                 <Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
               </div>
               <div>
-                <Label>Номер телефона отправителя</Label>
-                <Select value={editForm.phone} onValueChange={(v) => setEditForm({ ...editForm, phone: v })}>
-                  <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
-                  <SelectContent>
-                    {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                <Label>Номера телефонов отправителей</Label>
+                <div className="rounded-md border border-input bg-background p-2 space-y-1 max-h-40 overflow-y-auto">
+                  {phoneOptions.map((p) => (
+                    <label key={p} className="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/50 cursor-pointer text-sm">
+                      <input
+                        type="checkbox"
+                        checked={editForm.phones.includes(p)}
+                        onChange={(e) => {
+                          setEditForm(f => ({
+                            ...f,
+                            phones: e.target.checked ? [...f.phones, p] : f.phones.filter(x => x !== p),
+                          }));
+                        }}
+                        className="rounded border-input"
+                      />
+                      {p}
+                    </label>
+                  ))}
+                </div>
+                {editForm.phones.length > 0 && (
+                  <p className="text-xs text-muted-foreground mt-1">Выбрано: {editForm.phones.length}</p>
+                )}
               </div>
               <div>
                 <Label>Текст рассылки</Label>
