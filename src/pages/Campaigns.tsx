@@ -12,6 +12,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { Badge } from "@/components/ui/badge";
 import { ru } from "date-fns/locale";
 import { Plus, CalendarIcon, Pause, Play, Trash2, MoreVertical, Download, Copy, Pencil, Archive } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
