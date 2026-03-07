@@ -373,7 +373,7 @@ const Campaigns = () => {
                 <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-5 py-4 flex items-center justify-between">
                   <div>
                     <h2 className="font-display font-bold text-lg">{selected.name}</h2>
-                    <p className="text-primary-foreground/80 text-sm">{selected.phone}</p>
+                    <p className="text-primary-foreground/80 text-sm">{selected.phone.join(", ")}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
