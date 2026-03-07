@@ -518,7 +518,7 @@ const Contacts = () => {
               <Label>Вставьте данные</Label>
               <Textarea
                 rows={8}
-                placeholder={"+79001234567, Москва, 10%\n+79112345678, СПб, 15%\n+79253456789, Казань"}
+                placeholder={"+79001234567; Москва; 10%\n+79112345678; СПб; 15%\n+79253456789; Казань"}
                 value={importText}
                 onChange={e => setImportText(e.target.value)}
                 className="font-mono text-sm"
