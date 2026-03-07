@@ -61,6 +61,7 @@ const initialCampaigns: Campaign[] = [
 ];
 
 const groupOptions = ["Keremet update", "Клиенты VIP", "Партнёры", "Новые"];
+const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250", "77082877802", "77002570488"];
 
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
@@ -136,7 +137,12 @@ const Campaigns = () => {
                 </div>
                 <div>
                   <Label>Номер телефона отправителя</Label>
-                  <Input placeholder="77713567919" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <Select value={form.phone} onValueChange={(v) => setForm({ ...form, phone: v })}>
+                    <SelectTrigger><SelectValue placeholder="Выберите номер" /></SelectTrigger>
+                    <SelectContent>
+                      {phoneOptions.map((p) => <SelectItem key={p} value={p}>{p}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label>Текст рассылки</Label>
