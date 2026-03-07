@@ -233,6 +233,7 @@ const Campaigns = () => {
                       {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
+                  {form.group && <SubgroupVariableInfo groupName={form.group} />}
                 </div>
                 <div>
                   <Label>Запланировать рассылку</Label>
