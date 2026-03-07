@@ -205,7 +205,7 @@ const Campaigns = () => {
                 <Plus className="h-4 w-4" /> Новая рассылка
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-lg">
+            <DialogContent className="sm:max-w-lg max-h-[85vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="font-display">Создать рассылку</DialogTitle>
               </DialogHeader>
