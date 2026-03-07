@@ -291,13 +291,39 @@ const Campaigns = () => {
                     >
                       {selected.isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-8 w-8"
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-primary-foreground/80 hover:text-primary-foreground hover:bg-primary-foreground/10 h-8 w-8"
+                        >
+                          <MoreVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => {
+                          const clone: Campaign = { ...selected, id: Date.now().toString(), name: selected.name + " (копия)", sent: 0, pending: selected.sent + selected.pending + selected.failed, failed: 0, isPaused: true };
+                          setCampaigns(prev => [...prev, clone]);
+                          setSelectedId(clone.id);
+                          toast.success("Рассылка клонирована");
+                        }}>
+                          <Copy className="h-4 w-4 mr-2" /> Клонировать
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => toast.info("Функция редактирования в разработке")}>
+                          <Pencil className="h-4 w-4 mr-2" /> Изменить
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          disabled={selected.pending > 0}
+                          onClick={() => {
+                            handleDelete(selected.id);
+                            toast.success("Рассылка архивирована");
+                          }}
+                        >
+                          <Archive className="h-4 w-4 mr-2" /> Архивировать
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <Button
                       variant="ghost"
                       size="icon"
