@@ -67,13 +67,43 @@ const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250"
 const Campaigns = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(campaigns[0]?.id || null);
   const [form, setForm] = useState({
     name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
     minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
   });
+  const [editForm, setEditForm] = useState({
+    name: "", phone: "", message: "", group: "", date: undefined as Date | undefined, time: "08:00",
+    minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
+  });
 
   const selected = campaigns.find((c) => c.id === selectedId) || null;
+
+  const openEditDialog = (c: Campaign) => {
+    setEditingId(c.id);
+    setEditForm({
+      name: c.name, phone: c.phone, message: c.message, group: c.group,
+      date: c.nextAction || undefined, time: c.nextActionTime,
+      minInterval: "600", maxInterval: "1200", sendFrom: "8:00", sendTo: "20:00",
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleEdit = () => {
+    if (!editForm.name || !editForm.phone || !editForm.message || !editForm.group) {
+      toast.error("Заполните все обязательные поля");
+      return;
+    }
+    setCampaigns(prev => prev.map(c => c.id === editingId ? {
+      ...c, name: editForm.name, phone: editForm.phone, message: editForm.message,
+      group: editForm.group, nextAction: editForm.date || null, nextActionTime: editForm.time,
+    } : c));
+    setEditDialogOpen(false);
+    setEditingId(null);
+    toast.success("Рассылка обновлена");
+  };
 
   const handleCreate = () => {
     if (!form.name || !form.phone || !form.message || !form.group) {
