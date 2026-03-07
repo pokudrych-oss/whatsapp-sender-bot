@@ -22,7 +22,7 @@ import { toast } from "sonner";
 interface Campaign {
   id: string;
   name: string;
-  phone: string;
+  phone: string[];
   message: string;
   group: string;
   nextAction: Date | null;
