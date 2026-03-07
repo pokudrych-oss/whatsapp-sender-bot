@@ -499,8 +499,8 @@ const Contacts = () => {
                 onChange={e => setNewContact({ ...newContact, phone: e.target.value })} />
             </div>
             <div>
-              <Label>Переменные (через запятую)</Label>
-              <Input placeholder="Москва, 10%, золотой" value={newContact.variables}
+              <Label>Переменные (через точку с запятой ;)</Label>
+              <Input placeholder="Москва; 10%; золотой" value={newContact.variables}
                 onChange={e => setNewContact({ ...newContact, variables: e.target.value })} />
               <p className="text-xs text-muted-foreground mt-1">Будут доступны как var1, var2, var3…</p>
             </div>
