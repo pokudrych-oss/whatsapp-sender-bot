@@ -83,7 +83,7 @@ const subgroupData: Record<string, { variables: string[]; examples: Record<strin
 const subgroupOptions = Object.keys(subgroupData);
 const phoneOptions = ["77053975328", "77002358625", "77713567919", "77083029250", "77082877802", "77002570488"];
 
-const SubgroupVariableInfo = ({ groupName }: { groupName: string }) => {
+const SubgroupVariableInfo = ({ groupName, onInsert }: { groupName: string; onInsert?: (variable: string) => void }) => {
   const data = subgroupData[groupName];
   if (!data) return null;
   return (
@@ -95,7 +95,14 @@ const SubgroupVariableInfo = ({ groupName }: { groupName: string }) => {
       <div className="space-y-1">
         {data.variables.map((v) => (
           <div key={v} className="flex items-center justify-between text-sm">
-            <code className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono">{`{{${v}}}`}</code>
+            <button
+              type="button"
+              onClick={() => onInsert?.(`{{${v}}}`)}
+              className="text-xs bg-muted px-1.5 py-0.5 rounded font-mono hover:bg-primary/20 hover:text-primary transition-colors cursor-pointer"
+              title="Нажмите чтобы вставить в текст"
+            >
+              {`{{${v}}}`}
+            </button>
             <span className="text-xs text-muted-foreground truncate ml-2">{data.examples[v]}</span>
           </div>
         ))}
@@ -233,7 +240,7 @@ const Campaigns = () => {
                       {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                     </SelectContent>
                   </Select>
-                  {form.group && <SubgroupVariableInfo groupName={form.group} />}
+                  {form.group && <SubgroupVariableInfo groupName={form.group} onInsert={(v) => setForm(f => ({ ...f, message: f.message + v }))} />}
                 </div>
                 <div>
                   <Label>Запланировать рассылку</Label>
@@ -499,7 +506,7 @@ const Campaigns = () => {
                     {subgroupOptions.map((g) => <SelectItem key={g} value={g}>{g}</SelectItem>)}
                   </SelectContent>
                 </Select>
-                {editForm.group && <SubgroupVariableInfo groupName={editForm.group} />}
+                {editForm.group && <SubgroupVariableInfo groupName={editForm.group} onInsert={(v) => setEditForm(f => ({ ...f, message: f.message + v }))} />}
               </div>
               <div>
                 <Label>Запланировать рассылку</Label>
