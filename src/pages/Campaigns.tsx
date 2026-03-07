@@ -50,7 +50,7 @@ const initialCampaigns: Campaign[] = [
   {
     id: "2",
     name: "Акция весна 2026",
-    phone: "77019998877",
+    phone: ["77019998877"],
     message: "Здравствуйте, {{field_1}}! Рады сообщить вам о весенней акции. Скидка {{field_2}}% на все услуги до конца марта!",
     group: "Клиенты VIP",
     nextAction: new Date(2026, 2, 10),
