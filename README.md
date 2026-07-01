@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
+# WhatsApp CRM & Broadcast Dashboard
 
-## Project info
+A fully containerized self-hosted WhatsApp Broadcast CRM dashboard built with **React, TypeScript, Vite, Tailwind CSS, Express, Prisma, SQLite, and whatsapp-web.js**. 
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project allows you to connect multiple WhatsApp accounts via QR codes, import contact groups with custom variables, manage message templates, and run automated broadcast campaigns with staggered sending intervals, respect for working hours, and sender rotation.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## Folder Structure
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+.
+├── docker-compose.yml          # Main Docker orchestration file
+├── README.md                   # Setup and usage guide
+├── frontend/                   # React dashboard (Vite + TS)
+│   ├── src/
+│   ├── nginx.conf              # Nginx proxy for assets, API, and WebSockets
+│   └── Dockerfile              # Multi-stage production build
+└── backend/                    # Node.js API & whatsapp-web.js engine
+    ├── src/
+    ├── prisma/                 # SQLite database schema
+    └── Dockerfile              # Running Puppeteer/headless Chrome inside Docker
 ```
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Features
 
-**Use GitHub Codespaces**
+- **WhatsApp Session Manager**: Multi-device login using QR code generation. Sessions are stored in a mounted volume to prevent logout when containers restart.
+- **Dynamic Variable substitution**: Import contacts with variables (using semicolon `;` as separator), which are parsed and substituted dynamically in template messages (e.g. `{{field_1}}`, `{{field_2}}`).
+- **Broadcast Engine**: Schedule campaigns, specify message sending intervals (e.g., between 60s and 120s), set working hours (e.g., send only between 9:00 and 19:00), and rotate active connected accounts.
+- **WhatsApp Presence Check**: Verify if contact numbers are registered on WhatsApp before queuing.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## Local Development (Without Docker)
 
-This project is built with:
+You can run both services independently for development purposes.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### 1. Backend Setup
+1. Open a terminal and navigate to the backend folder:
+   ```bash
+   cd backend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Initialize the database:
+   ```bash
+   npx prisma db push
+   ```
+4. Start the development server (runs on `http://localhost:5000`):
+   ```bash
+   npm run dev
+   ```
 
-## How can I deploy this project?
+### 2. Frontend Setup
+1. Open another terminal and navigate to the frontend folder:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite server (runs on `http://localhost:5173`):
+   ```bash
+   npm run dev
+   ```
+4. Access the web app at `http://localhost:5173`.
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+---
 
-## Can I connect a custom domain to my Lovable project?
+## Production Deployment (With Docker Compose)
 
-Yes, you can!
+The easiest way to run the entire app in production is using Docker Compose. It compiles the frontend, installs headless Chrome dependencies in the backend, and mounts volumes to preserve login states and data.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### 1. Prerequisites
+Ensure you have **Docker** and **Docker Compose** installed on your VPS or server.
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### 2. Launch the Application
+Run the following command from the project root:
+```bash
+docker-compose up --build -d
+```
+
+This will build and start:
+- **Backend API & WhatsApp service** (internal, exposed on port `5000`)
+- **Frontend SPA served via Nginx** (exposed on port `8080`)
+
+### 3. Accessing the Dashboard
+Open your browser and navigate to:
+`http://<your-server-ip>:8080` (or `http://localhost:8080` if running locally).
+
+### 4. Customizing Port
+If you want to run the app on port `80` (default web port), edit the `docker-compose.yml` file and change the port mapping for the frontend service:
+```yaml
+  frontend:
+    ...
+    ports:
+      - "80:80"   # Exposes the frontend on standard port 80
+```
+
+### 5. Persistent Data
+The containers automatically mount two persistent Docker volumes:
+- `backend-sessions`: Stores the WhatsApp auth states so scanning is only required once.
+- `backend-data`: Stores the SQLite database file (`database.db`).
+Both volumes survive container updates and system reboots.
