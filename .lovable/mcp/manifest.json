@@ -1,0 +1,99 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "none"
+  },
+  "mcp": {
+    "server": {
+      "name": "wa-sender-mcp",
+      "version": "0.1.0",
+      "title": "WA Sender MCP"
+    },
+    "tools": [
+      {
+        "name": "ping",
+        "title": "Ping",
+        "description": "Simple connectivity check. Returns a pong message with the current server timestamp.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "message": {
+              "description": "Optional message to echo back.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "format_phone_number",
+        "title": "Format phone number",
+        "description": "Normalize a raw phone number by stripping non-digit characters. Returns the digits-only form used by the WhatsApp broadcast manager (e.g. 77713567919).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "phone": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Raw phone input, e.g. '+7 (771) 356-7919'."
+            }
+          },
+          "required": [
+            "phone"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "render_template",
+        "title": "Render broadcast template",
+        "description": "Fill a broadcast template that uses {{variable}} placeholders (e.g. {{field_1}}, {{name}}) with the provided variable values. Returns the rendered message plus the list of variables that were not substituted.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "template": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Template body containing {{variable}} placeholders."
+            },
+            "variables": {
+              "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "string"
+              },
+              "description": "Object mapping variable name (without braces) to its replacement value."
+            }
+          },
+          "required": [
+            "template",
+            "variables"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
